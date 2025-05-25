@@ -1,0 +1,95 @@
+<script src="Common.js"></script>
+
+<script>
+
+function GenerateNextNumber(ANum, N)
+{
+  ANum[0]++;
+  var i = 0;
+  while(ANum[i] > N - 1)
+  {
+    ANum[i] = 0;
+    i++;
+    ANum[i]++;
+  }
+}
+
+function CheckForDuplicates(ANum)
+{
+//return true if there are duplicates
+  var Ar = [];//
+  for(i = 0; i < ANum.length - 1; i++)
+  {
+    if(Ar[ANum[i]])
+      return true;
+    Ar[ANum[i]] = true;
+  }
+  return false;
+}
+
+function Towers(N)
+{
+  var LNum = [];
+  for(var i = 0; i <= N; i++)
+    LNum.push(0);
+  LNum[0] = -1;
+  var R = 0;
+  while(true)
+  {
+    do
+      GenerateNextNumber(LNum, N);
+    while(LNum[N] === 0 && CheckForDuplicates(LNum, N))
+
+    if(LNum[N] === 0)
+      R++;
+    else
+      break;
+  }
+  return R;
+}
+//alert(Towers(8));
+
+function Towers2(N)
+{
+  var LPosAr = [];
+  var LTakenAr = [];
+  var R = 0;
+  var iCol = 0;
+  while(iCol >= 0)
+  {
+    if(LPosAr[iCol] >= 0) // перевіряю чи в даній колонці поставлена тура
+    {
+      if(LTakenAr[LPosAr[iCol]] === iCol) //
+        LTakenAr[LPosAr[iCol]] = -1;
+      LPosAr[iCol]++;
+
+      if(LPosAr[iCol] >= N)
+      {
+        LPosAr[iCol] = -1;
+        iCol--;
+        continue;
+      }
+    }
+    else
+      LPosAr[iCol] = 0; // тура не поставлена, ставлю в перший рядочок
+
+    if(LTakenAr[LPosAr[iCol]] >= 0) // перевіряємо чи рядочок зайнятий
+      continue; // на початок, бо рядочок вже зайнятий
+
+    LTakenAr[LPosAr[iCol]] = iCol; // помічаємо рядочок як зайнятий поточною колонкою
+    iCol++;
+
+    if(iCol === N)
+    {
+      R++;
+      iCol--;
+    }
+  }
+  return R;
+}
+SpeedTest(function(){ Towers2(8) }, 1);
+//SpeedTest(function(){ Towers2(10) }, 1);
+//SpeedTest(function(){ Towers2(10) }, 1);
+SpeedTest(function(){ Towers(8) }, 1);
+
+</script>

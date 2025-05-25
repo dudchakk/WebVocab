@@ -1,0 +1,103 @@
+<script src="Common.js"></script>
+
+<script>
+
+function StrToNum(S)
+{
+  var R = [];
+  for(var i = 0, L = S.length - 1; i <= L; i++)
+    R[L - i] = S[i];
+  return R;
+}
+
+function NumToStr(Num)
+{
+  var R = '';
+  for(var i = Num.length - 1; i >= 0; i--)
+  {
+    R += Num[i];
+    if(i % 3 === 0 && i !== 0)
+      R += '\'';
+  }
+  return R;
+}
+//alert(NumToStr([7,6,5,4,3,2,1]));
+
+function Mul(Num1, Num2, N)
+{
+  var R = [];
+  var iR;
+  for(var i2 = 0; i2 < Num2.length; i2++)
+    for(var i1 = 0; i1 < Num1.length; i1++)
+    {
+      iR = i1 + i2;
+      if(!R[iR])
+        R[iR] = 0;
+      R[iR] += Num1[i1] * Num2[i2];
+    }
+  var El, Div;
+
+  for(iR = 0; iR < R.length; )
+  {
+    El = R[iR];
+    R[iR] = El % N;
+    iR++;
+    Div = (El - R[iR - 1]) / N;
+    if(Div > 0)
+    {
+      if(!R[iR])
+        R[iR] = 0;
+      R[iR] += Div;
+    }
+  }
+
+  return R;
+}
+//alert(NumToStr(Mul(StrToNum('45'), StrToNum('123'), 10)));
+//alert(Mul([5, 5], [5, 5], 10).join(' '));
+
+function Add(Num1, Num2, N)
+{
+  var R = [];
+
+  var Max = (Num1.length > Num2.length) ? Num1.length : Num2.length;
+
+  for(var i = 0; i < Max; i++)
+  {
+    if(!R[i])
+      R[i] = 0;
+    if(Num1[i])
+      R[i] += Num1[i];
+    if(Num2[i])
+      R[i] += Num2[i];
+    if(R[i] >= N)
+    {
+      R[i] -= N;
+      R[i + 1] = 1;
+    }
+  }
+  return R;
+}
+//alert(Add([9, 9], [9], 10));
+
+function NumAdd(Num1, Num2, N)
+{
+  var R = [];
+  var t = 0;
+  for(var i = 0; i < Num1.length || i < Num2.length; i++)
+  {
+    if(!Num1[i])
+      Num1[i] = 0
+    if(!Num2[i])
+      Num2[i] = 0
+
+    R[i] = Num1[i] + Num2[i];
+    R[i] += t;
+    t = R[i] - (R[i] % N);
+  }
+  return R;
+}
+alert(NumAdd([1, 2], [7], 10))
+
+
+</script>
