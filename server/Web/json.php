@@ -3,6 +3,7 @@ $DO_NOT_REDIRECT_TO_LOGON = true;
 require_once('../common.php');
 if(!isset($UserID))
 {
+  $UserID = 2;
 }
 
 header('Content-Type: application/json; charset=utf-8');
