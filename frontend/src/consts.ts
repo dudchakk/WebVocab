@@ -7,3 +7,4 @@ export const UPDATE_WORD_URL = `${SERVER_URL}/WordUpdate.php?mode=json&submit=Up
 export const DELETE_WORD_URL = `${SERVER_URL}/WordUpdate.php?mode=json&submit=Delete`;
 
 export const CHECK_WORD_URL = `${SERVER_URL}/CheckWord.php?mode=json`;
+export const DAILY_STAT_URL = `${SERVER_URL}/DailyStat.php?mode=json`;

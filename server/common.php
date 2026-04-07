@@ -15,7 +15,7 @@ function DW($AName, $AVal)
   print_r('</pre>');
 }
 
-$Con = pg_connect('dbname=vocabulary user=uvocabulary password=xkjdyvxjr');
+$Con = pg_connect('port=32000 dbname=vocabulary user=uvocabulary password=xkjdyvxjr');
 
 function UserIDGet($AUN, $APWD)
 {
@@ -50,9 +50,12 @@ function CheckSortByBuild($APrefix, $ANormalize = false, $ATableAliasSuffix = ''
 
 function CORSHeadersRender()
 {
-  header('Access-Control-Allow-Origin: *');
+  $Origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '*';
+  header('Access-Control-Allow-Origin: ' . $Origin);
+  header('Vary: Origin');
   header('Access-Control-Allow-Credentials: true');
-  header('Access-Control-Allow-Methods: GET, POST');
+  header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+  header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 }
 
 function HeaderRender()
