@@ -5,7 +5,11 @@ export default function Header() {
   return (
     <AppBar
       position="fixed"
-      sx={{ backgroundColor: "#90CAF9", boxShadow: "none" }}
+      sx={{
+        backgroundColor: "#90CAF9",
+        boxShadow: "none",
+        color: "#000000",
+      }}
     >
       <Toolbar>
         <Box sx={{ display: "flex", width: "100%", justifyContent: "space-around" }}>

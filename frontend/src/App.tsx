@@ -1,4 +1,5 @@
 import './App.css'
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import Header from './components/Header'
 import { Route, Routes } from 'react-router'
 import Dictionary from './components/Dictionary'
@@ -8,6 +9,16 @@ import UpdateWord from './components/WordForm/UpdateWord'
 import PracticeSelector from './components/Practise/PractiseSelector'
 import Practice from './components/Practise/Practise'
 // import { useEffect } from 'react'
+
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+    text: {
+      primary: '#000000',
+      secondary: '#212121',
+    },
+  },
+})
 
 function App() {
   // useEffect(() => {
@@ -21,7 +32,8 @@ function App() {
   //   console.log(getData())
   // }, [])
   return (
-    <>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Header />
       <Routes>
         <Route path='/' element={<Dictionary />} />
@@ -31,7 +43,7 @@ function App() {
         <Route path="/practice/:direction" element={<Practice />} />
         <Route path='/statistics' element={<Statistics />} />
       </Routes>
-    </>
+    </ThemeProvider>
   )
 }
 
