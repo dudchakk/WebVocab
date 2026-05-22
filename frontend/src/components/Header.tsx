@@ -1,36 +1,23 @@
-import { AppBar, Toolbar, Button, Box } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 
 export default function Header() {
   return (
-    <AppBar
-      position="fixed"
-      sx={{
-        backgroundColor: "#90CAF9",
-        boxShadow: "none",
-        color: "#000000",
-      }}
-    >
-      <Toolbar>
-        <Box sx={{ display: "flex", width: "100%", justifyContent: "space-around" }}>
-          <Button color="inherit" component={Link} to="/" sx={{
-             '&:hover': {
-              color: '#000',
-            },
-          }}>
-            Словник
-          </Button>
-          <Button color="inherit" component={Link} to="/add-word">
-            Додати слово
-          </Button>
-          <Button color="inherit" component={Link} to="/practice">
-            Повторення
-          </Button>
-          <Button color="inherit" component={Link} to="/statistics">
-            Статистика
-          </Button>
-        </Box>
-      </Toolbar>
-    </AppBar>
-  );
+    <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-center border-b border-[#b0d4ef] bg-[#c0e1fc] text-foreground shadow-none">
+      <nav className="flex w-full max-w-4xl items-center justify-around px-2">
+        <Button variant="ghost" className="text-foreground hover:text-foreground" asChild>
+          <Link to="/">Словник</Link>
+        </Button>
+        <Button variant="ghost" className="text-foreground hover:text-foreground" asChild>
+          <Link to="/add-word">Додати слово</Link>
+        </Button>
+        <Button variant="ghost" className="text-foreground hover:text-foreground" asChild>
+          <Link to="/practice">Повторення</Link>
+        </Button>
+        <Button variant="ghost" className="text-foreground hover:text-foreground" asChild>
+          <Link to="/statistics">Статистика</Link>
+        </Button>
+      </nav>
+    </header>
+  )
 }

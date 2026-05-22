@@ -1,9 +1,11 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { useParams } from "react-router-dom";
-import { Button, Typography, Box, CircularProgress } from "@mui/material";
-import { CHECK_WORD_URL } from "../../consts";
-import { DirectionEnum } from "./PractiseSelector";
-import { fetchExampleSentenceForWord } from "../../openai/exampleSentence";
+import { useEffect, useState, type ReactNode } from "react"
+import { useParams } from "react-router-dom"
+import { Loader2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { CHECK_WORD_URL } from "../../consts"
+import { DirectionEnum } from "./PractiseSelector"
+import { fetchExampleSentenceForWord } from "../../openai/exampleSentence"
 
 export enum ActionEnum {
   right = "Right",
@@ -15,95 +17,95 @@ const getNextWord = async (
   id?: number,
   action?: ActionEnum
 ) => {
-  const idParam = id ? `&id=${id}` : "";
-  const actionParam = action ? `&action=${action}` : "";
+  const idParam = id ? `&id=${id}` : ""
+  const actionParam = action ? `&action=${action}` : ""
 
   const response = await fetch(
     `${CHECK_WORD_URL}&Direction=${direction}${idParam}${actionParam}`
-  );
-  if (!response.ok) throw new Error("Не вдалося завантажити слово");
-  return await response.json();
-};
+  )
+  if (!response.ok) throw new Error("Не вдалося завантажити слово")
+  return await response.json()
+}
 
 function underlineWordInSentence(sentence: string, word: string): ReactNode {
-  const trimmed = word.trim();
-  if (!trimmed) return sentence;
-  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const re = new RegExp(escaped, "gi");
-  const parts: ReactNode[] = [];
-  let last = 0;
-  let key = 0;
+  const trimmed = word.trim()
+  if (!trimmed) return sentence
+  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  const re = new RegExp(escaped, "gi")
+  const parts: ReactNode[] = []
+  let last = 0
+  let key = 0
   for (const m of sentence.matchAll(re)) {
-    const idx = m.index ?? 0;
-    if (idx > last) parts.push(sentence.slice(last, idx));
-    parts.push(<u key={`u-${key++}`}>{m[0]}</u>);
-    last = idx + m[0].length;
+    const idx = m.index ?? 0
+    if (idx > last) parts.push(sentence.slice(last, idx))
+    parts.push(<u key={`u-${key++}`}>{m[0]}</u>)
+    last = idx + m[0].length
   }
-  if (last < sentence.length) parts.push(sentence.slice(last));
-  return parts.length > 0 ? <>{parts}</> : sentence;
+  if (last < sentence.length) parts.push(sentence.slice(last))
+  return parts.length > 0 ? <>{parts}</> : sentence
 }
 
 const PracticePage = () => {
   const { direction } = useParams<{
-    direction: DirectionEnum;
-  }>();
+    direction: DirectionEnum
+  }>()
   const [currentWord, setCurrentWord] = useState<{
-    word: string;
-    translation: string;
-    id: number;
-  } | null>(null);
-  const [showTranslation, setShowTranslation] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [exampleSentence, setExampleSentence] = useState<string | null>(null);
-  const [exampleLoading, setExampleLoading] = useState(false);
-  const [exampleError, setExampleError] = useState<string | null>(null);
+    word: string
+    translation: string
+    id: number
+  } | null>(null)
+  const [showTranslation, setShowTranslation] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [exampleSentence, setExampleSentence] = useState<string | null>(null)
+  const [exampleLoading, setExampleLoading] = useState(false)
+  const [exampleError, setExampleError] = useState<string | null>(null)
 
   const loadWord = async (action?: ActionEnum) => {
     try {
-      setLoading(true);
-      const word = await getNextWord(direction, currentWord?.id, action);
-      setCurrentWord(word);
+      setLoading(true)
+      const word = await getNextWord(direction, currentWord?.id, action)
+      setCurrentWord(word)
     } catch (e) {
-      console.error(e);
+      console.error(e)
     } finally {
-      setLoading(false);
-      setShowTranslation(false);
-      setExampleSentence(null);
-      setExampleError(null);
-      setExampleLoading(false);
+      setLoading(false)
+      setShowTranslation(false)
+      setExampleSentence(null)
+      setExampleError(null)
+      setExampleLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    loadWord();
-  }, [direction]);
+    loadWord()
+  }, [direction])
 
   useEffect(() => {
     if (!showTranslation || !currentWord || !direction) {
-      return;
+      return
     }
 
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY
     if (!apiKey) {
       setExampleError(
         "Додайте OPENAI_API_KEY (або VITE_OPENAI_API_KEY) у frontend/.env.local і перезапустіть dev-сервер."
-      );
-      return;
+      )
+      return
     }
 
     const wordForExample =
       direction === DirectionEnum.en
         ? currentWord.word
-        : currentWord.translation;
+        : currentWord.translation
     const languageLabel =
-      direction === DirectionEnum.en ? "English" : "Ukrainian";
+      direction === DirectionEnum.en ? "English" : "Ukrainian"
 
-    const controller = new AbortController();
-    let cancelled = false;
+    const controller = new AbortController()
+    let cancelled = false
 
-    setExampleLoading(true);
-    setExampleError(null);
-    setExampleSentence(null);
+    setExampleLoading(true)
+    setExampleError(null)
+    setExampleSentence(null)
 
     fetchExampleSentenceForWord(
       apiKey,
@@ -112,128 +114,116 @@ const PracticePage = () => {
       controller.signal
     )
       .then((sentence) => {
-        if (!cancelled) setExampleSentence(sentence);
+        if (!cancelled) setExampleSentence(sentence)
       })
       .catch((err: unknown) => {
         if (cancelled || (err instanceof Error && err.name === "AbortError")) {
-          return;
+          return
         }
-        setExampleError("Не вдалося згенерувати приклад речення.");
+        setExampleError("Не вдалося згенерувати приклад речення.")
       })
       .finally(() => {
-        if (!cancelled) setExampleLoading(false);
-      });
+        if (!cancelled) setExampleLoading(false)
+      })
 
     return () => {
-      cancelled = true;
-      controller.abort();
-    };
-  }, [showTranslation, currentWord, direction]);
+      cancelled = true
+      controller.abort()
+    }
+  }, [showTranslation, currentWord, direction])
 
   const handleCheck = () => {
-    setShowTranslation(true);
-  };
+    setShowTranslation(true)
+  }
 
   const handleAnswer = async (action: ActionEnum) => {
-    await loadWord(action);
-  };
+    await loadWord(action)
+  }
 
   if (loading || !currentWord)
-    return <Typography>Завантаження...</Typography>;
+    return (
+      <p className="pt-24 text-center text-muted-foreground">Завантаження...</p>
+    )
 
   const targetWord =
     direction === DirectionEnum.en
       ? currentWord.word
-      : currentWord.translation;
+      : currentWord.translation
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="calc(100vh - 64px)"
-      width="350"
-    >
-      <Box
-        width="100%"
-        maxWidth="500px"
-        p={4}
-        borderRadius={2}
-        boxShadow={3}
-        bgcolor="#f9f9f9"
-      >
-        <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
-          Слово:{" "}
-          <strong>
-            {direction === DirectionEnum.uk
-              ? currentWord.translation
-              : currentWord.word}
-          </strong>
-        </Typography>
+    <div className="flex min-h-[calc(100vh-4rem)] w-full items-center justify-center px-4 pt-16">
+      <Card className="w-full max-w-[500px] border-border bg-muted/40 shadow-md">
+        <CardContent className="space-y-4 p-6">
+          <h2 className="text-xl font-medium leading-snug">
+            Слово:{" "}
+            <strong>
+              {direction === DirectionEnum.uk
+                ? currentWord.translation
+                : currentWord.word}
+            </strong>
+          </h2>
 
-        {!showTranslation ? (
-          <Button variant="contained" onClick={handleCheck}>
-            Перевірити
-          </Button>
-        ) : (
-          <>
-            <Typography variant="body1" sx={{ marginTop: 2, fontSize: 18 }}>
-              Переклад:{" "}
-              <strong>
-                {direction === DirectionEnum.uk
-                  ? currentWord.word
-                  : currentWord.translation}
-              </strong>
-            </Typography>
+          {!showTranslation ? (
+            <Button type="button" onClick={handleCheck}>
+              Перевірити
+            </Button>
+          ) : (
+            <>
+              <p className="mt-2 text-lg">
+                Переклад:{" "}
+                <strong>
+                  {direction === DirectionEnum.uk
+                    ? currentWord.word
+                    : currentWord.translation}
+                </strong>
+              </p>
 
-            <Box sx={{ marginTop: 2, minHeight: 48 }}>
-              {exampleLoading && (
-                <Box display="flex" alignItems="center" gap={1}>
-                  <CircularProgress size={20} />
-                  <Typography variant="body2" color="text.primary">
-                    Готуємо приклад речення…
-                  </Typography>
-                </Box>
-              )}
-              {!exampleLoading && exampleSentence && (
-                <Typography variant="body2" color="text.primary">
-                  Приклад:{" "}
-                  <Box
-                    component="span"
-                    sx={{ fontStyle: "italic" }}
-                  >
-                    {underlineWordInSentence(exampleSentence, targetWord)}
-                  </Box>
-                </Typography>
-              )}
-              {!exampleLoading && exampleError && (
-                <Typography variant="body2" color="error">
-                  {exampleError}
-                </Typography>
-              )}
-            </Box>
+              <div className="min-h-12">
+                {exampleLoading && (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="size-5 animate-spin text-muted-foreground" aria-hidden />
+                    <span className="text-sm text-muted-foreground">
+                      Готуємо приклад речення…
+                    </span>
+                  </div>
+                )}
+                {!exampleLoading && exampleSentence && (
+                  <p className="text-sm">
+                    Приклад:{" "}
+                    <span className="italic">
+                      {underlineWordInSentence(exampleSentence, targetWord)}
+                    </span>
+                  </p>
+                )}
+                {!exampleLoading && exampleError && (
+                  <p className="text-sm text-destructive">{exampleError}</p>
+                )}
+              </div>
 
-            <Box display="flex" justifyContent="space-around" marginTop={3} gap={1}>
-              <Button
-                color="success"
-                variant="outlined"
-                onClick={() => handleAnswer(ActionEnum.right)}
-              >
-                Правильно
-              </Button>
-              <Button
-                color="error"
-                variant="outlined"
-                onClick={() => handleAnswer(ActionEnum.wrong)}
-              >
-                Неправильно
-              </Button>
-            </Box>
-          </>
-        )}
-      </Box>
-    </Box>
-  );
-};
+              <div className="mt-4 flex flex-wrap justify-around gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="border-green-600 text-green-700 hover:bg-green-50 dark:hover:bg-green-950/30"
+                  onClick={() => handleAnswer(ActionEnum.right)}
+                >
+                  Правильно
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="border-destructive text-destructive hover:bg-destructive/10"
+                  onClick={() => handleAnswer(ActionEnum.wrong)}
+                >
+                  Неправильно
+                </Button>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
 
-export default PracticePage;
+export default PracticePage

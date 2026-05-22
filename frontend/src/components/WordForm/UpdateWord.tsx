@@ -20,7 +20,7 @@ const UpdateWord = () => {
           if (!response.ok) throw new Error('Помилка при додаванні')
           console.log(response.json())
           alert('Слово оновлено!')
-        } catch (error) {
+        } catch {
           alert('Не вдалося оновити слово. Спробуйте ще раз.')
         }
       }}
@@ -32,7 +32,7 @@ const UpdateWord = () => {
           if (!response.ok) throw new Error('Помилка при видаленні')
           console.log(response.json())
           alert('Слово видалено!')
-        } catch (error) {
+        } catch {
           alert('Не вдалося видалити слово. Спробуйте ще раз.')
         }
       }}

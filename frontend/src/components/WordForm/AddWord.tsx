@@ -13,7 +13,7 @@ const AddWord = () => {
           if (!response.ok) throw new Error('Помилка при додаванні')
           console.log(response.json())
           alert('Слово додано!')
-        } catch (error) {
+        } catch {
           alert('Не вдалося додати слово. Спробуйте ще раз.')
         }
       }}
