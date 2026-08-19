@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { DirectionEnum } from "@/lib/constants"
 import { useNavigate } from "react-router-dom"
-
-export enum DirectionEnum { en = "EngToUkr", uk = "UkrToEng" }
 
 const PracticeSelector = () => {
   const navigate = useNavigate()

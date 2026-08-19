@@ -1,16 +1,11 @@
-import { useEffect, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useState, type ReactNode } from "react"
 import { useParams } from "react-router-dom"
 import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { CHECK_WORD_URL } from "../../consts"
-import { DirectionEnum } from "./PractiseSelector"
+import { DirectionEnum, ActionEnum } from "@/lib/constants"
 import { fetchExampleSentenceForWord } from "../../openai/exampleSentence"
-
-export enum ActionEnum {
-  right = "Right",
-  wrong = "Wrong",
-}
 
 const getNextWord = async (
   direction: DirectionEnum | undefined,
@@ -60,7 +55,7 @@ const PracticePage = () => {
   const [exampleLoading, setExampleLoading] = useState(false)
   const [exampleError, setExampleError] = useState<string | null>(null)
 
-  const loadWord = async (action?: ActionEnum) => {
+  const loadWord = useCallback(async (action?: ActionEnum) => {
     try {
       setLoading(true)
       const word = await getNextWord(direction, currentWord?.id, action)
@@ -74,11 +69,11 @@ const PracticePage = () => {
       setExampleError(null)
       setExampleLoading(false)
     }
-  }
+  }, [direction, currentWord?.id])
 
   useEffect(() => {
     loadWord()
-  }, [direction])
+  }, [direction, loadWord])
 
   useEffect(() => {
     if (!showTranslation || !currentWord || !direction) {
